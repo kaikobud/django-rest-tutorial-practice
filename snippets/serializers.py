@@ -4,6 +4,16 @@ from snippets.models import Snippet
 from django.contrib.auth.models import User
 
 
+"""
+HyperlinkedRelatedField: when we use HyperlinkedModelSerializer instead of
+ModelSerializer, use should use HyperlinkedRelatedField intead of PrimaryKeyRelatedField.
+PrimaryKeyRelatedField is used for reverse relation.
+
+HyperlinkedIdentityField: it is used for any direct field of current Model to show as a hyperlinked
+field in the api.
+"""
+
+
 class SnippetSerializer(serializers.HyperlinkedModelSerializer):
     created_by = serializers.ReadOnlyField(source='owner.username')
     highlight = serializers.HyperlinkedIdentityField(view_name='snippet-highlight', format='html')
@@ -15,7 +25,7 @@ class SnippetSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    snippets = serializers.HyperlinkedRelatedField(many=True,
+    snippets = serializers.PrimaryKeyRelatedField(many=True,
                                                    view_name='snippet-detail',
                                                    queryset=Snippet.objects.all())
 
